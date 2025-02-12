@@ -63,7 +63,9 @@ app.use('/wsdl', (req, res) => {
     res.send(xml);
 });
 
-const server = app.listen(3000, () => {
+const PORT = process.env.PORT || 3000;
+
+const server = app.listen(PORT, () => {
     soap.listen(server, '/inventory', service, xml);
-    console.log('SOAP server started at http://localhost:3000/wsdl');
+    console.log('SOAP server running on port', PORT);
 });

@@ -1,0 +1,162 @@
+<definitions name="InventoryService"
+  targetNamespace="http://example.com/inventory"
+  xmlns:tns="http://example.com/inventory"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+  <!-- Опис типів -->
+  <types>
+    <xsd:schema targetNamespace="http://example.com/inventory">
+      <xsd:element name="AddDailyPlanRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="productId" type="xsd:int"/>
+            <xsd:element name="plannedQuantity" type="xsd:int"/>
+            <xsd:element name="date" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="UpdateStockRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="productId" type="xsd:int"/>
+            <xsd:element name="changeType" type="xsd:string"/>
+            <xsd:element name="quantity" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="GetReportRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="date" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="AddProductRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="name" type="xsd:string"/>
+            <xsd:element name="category" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="AddProductResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="productId" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </types>
+
+  <!-- Вхідні та вихідні повідомлення -->
+  <message name="AddDailyPlanRequest">
+    <part name="parameters" element="tns:AddDailyPlanRequest"/>
+  </message>
+  <message name="AddDailyPlanResponse">
+    <part name="confirmation" type="xsd:string"/>
+  </message>
+
+  <message name="UpdateStockRequest">
+    <part name="parameters" element="tns:UpdateStockRequest"/>
+  </message>
+  <message name="UpdateStockResponse">
+    <part name="confirmation" type="xsd:string"/>
+  </message>
+
+  <message name="GetReportRequest">
+    <part name="parameters" element="tns:GetReportRequest"/>
+  </message>
+  <message name="GetReportResponse">
+    <part name="reportData" type="xsd:string"/>
+  </message>
+
+  <message name="AddProductRequest">
+    <part name="parameters" element="tns:AddProductRequest"/>
+  </message>
+  <message name="AddProductResponse">
+    <part name="parameters" element="tns:AddProductResponse"/>
+  </message>
+
+  <!-- Опис порту (операцій сервісу) -->
+  <portType name="InventoryPortType">
+    <operation name="addDailyPlan">
+      <input message="tns:AddDailyPlanRequest"/>
+      <output message="tns:AddDailyPlanResponse"/>
+    </operation>
+
+    <operation name="updateStock">
+      <input message="tns:UpdateStockRequest"/>
+      <output message="tns:UpdateStockResponse"/>
+    </operation>
+
+    <operation name="getReport">
+      <input message="tns:GetReportRequest"/>
+      <output message="tns:GetReportResponse"/>
+    </operation>
+
+    <operation name="addProduct">
+      <input message="tns:AddProductRequest"/>
+      <output message="tns:AddProductResponse"/>
+    </operation>
+  </portType>
+
+  <!-- Прив’язка операцій до SOAP -->
+  <binding name="InventoryBinding" type="tns:InventoryPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <operation name="addDailyPlan">
+      <soap:operation soapAction="http://example.com/inventory/addDailyPlan"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="updateStock">
+      <soap:operation soapAction="http://example.com/inventory/updateStock"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getReport">
+      <soap:operation soapAction="http://example.com/inventory/getReport"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="addProduct">
+      <soap:operation soapAction="http://example.com/inventory/addProduct"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+
+  <!-- Опис сервісу -->
+  <service name="InventoryService">
+    <port name="InventoryPort" binding="tns:InventoryBinding">
+      <soap:address location="http://localhost:3000/inventory"/>
+    </port>
+  </service>
+
+</definitions>

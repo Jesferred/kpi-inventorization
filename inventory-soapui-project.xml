@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="3d562de2-ba9f-4afa-8eb9-6c2ebe8a8b50" activeEnvironment="Default" name="inventory" resourceRoot="${projectDir}" soapui-version="5.8.0" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="b60b6e11-28e1-4647-93b4-eeb06ef2b890" wsaVersion="NONE" name="InventoryBinding" type="wsdl" bindingName="{http://example.com/inventory}InventoryBinding" soapVersion="1_1" anonymous="optional" definition="inventory.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="file:\C:\Users\kckte\kpi-inventorization\inventory.wsdl"><con:part><con:url>file:\C:\Users\kckte\kpi-inventorization\inventory.wsdl</con:url><con:content><![CDATA[<definitions name="InventoryService" targetNamespace="http://example.com/inventory" xmlns:tns="http://example.com/inventory" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <!--Опис типів-->
+  <types>
+    <xsd:schema targetNamespace="http://example.com/inventory">
+      <xsd:element name="AddDailyPlanRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="productId" type="xsd:int"/>
+            <xsd:element name="plannedQuantity" type="xsd:int"/>
+            <xsd:element name="date" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="UpdateStockRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="productId" type="xsd:int"/>
+            <xsd:element name="changeType" type="xsd:string"/>
+            <xsd:element name="quantity" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetReportRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="date" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="AddProductRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="name" type="xsd:string"/>
+            <xsd:element name="category" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="AddProductResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="productId" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </types>
+  <!--Вхідні та вихідні повідомлення-->
+  <message name="AddDailyPlanRequest">
+    <part name="parameters" element="tns:AddDailyPlanRequest"/>
+  </message>
+  <message name="AddDailyPlanResponse">
+    <part name="confirmation" type="xsd:string"/>
+  </message>
+  <message name="UpdateStockRequest">
+    <part name="parameters" element="tns:UpdateStockRequest"/>
+  </message>
+  <message name="UpdateStockResponse">
+    <part name="confirmation" type="xsd:string"/>
+  </message>
+  <message name="GetReportRequest">
+    <part name="parameters" element="tns:GetReportRequest"/>
+  </message>
+  <message name="GetReportResponse">
+    <part name="reportData" type="xsd:string"/>
+  </message>
+  <message name="AddProductRequest">
+    <part name="parameters" element="tns:AddProductRequest"/>
+  </message>
+  <message name="AddProductResponse">
+    <part name="parameters" element="tns:AddProductResponse"/>
+  </message>
+  <!--Опис порту (операцій сервісу)-->
+  <portType name="InventoryPortType">
+    <operation name="addDailyPlan">
+      <input message="tns:AddDailyPlanRequest"/>
+      <output message="tns:AddDailyPlanResponse"/>
+    </operation>
+    <operation name="updateStock">
+      <input message="tns:UpdateStockRequest"/>
+      <output message="tns:UpdateStockResponse"/>
+    </operation>
+    <operation name="getReport">
+      <input message="tns:GetReportRequest"/>
+      <output message="tns:GetReportResponse"/>
+    </operation>
+    <operation name="addProduct">
+      <input message="tns:AddProductRequest"/>
+      <output message="tns:AddProductResponse"/>
+    </operation>
+  </portType>
+  <!--Прив’язка операцій до SOAP-->
+  <binding name="InventoryBinding" type="tns:InventoryPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="addDailyPlan">
+      <soap:operation soapAction="http://example.com/inventory/addDailyPlan"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="updateStock">
+      <soap:operation soapAction="http://example.com/inventory/updateStock"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getReport">
+      <soap:operation soapAction="http://example.com/inventory/getReport"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="addProduct">
+      <soap:operation soapAction="http://example.com/inventory/addProduct"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <!--Опис сервісу-->
+  <service name="InventoryService">
+    <port name="InventoryPort" binding="tns:InventoryBinding">
+      <soap:address location="http://localhost:3000/inventory"/>
+    </port>
+  </service>
+</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:3000/inventory</con:endpoint></con:endpoints><con:operation id="59eaa767-f924-4477-bc29-4933b7629e51" isOneWay="false" action="http://example.com/inventory/addDailyPlan" name="addDailyPlan" bindingOperationName="addDailyPlan" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="b939230d-a0a6-4903-8aac-e1a6794a5539" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:AddDailyPlanRequest>\r
+         <productId>?</productId>\r
+         <plannedQuantity>?</plannedQuantity>\r
+         <date>?</date>\r
+      </inv:AddDailyPlanRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/addDailyPlan"/></con:call><con:call id="a9fe9201-7f62-4019-ab5d-01df607c9339" name="Request 2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:AddDailyPlanRequest>\r
+         <productId>?</productId>\r
+         <plannedQuantity>?</plannedQuantity>\r
+         <date>?</date>\r
+      </inv:AddDailyPlanRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/addDailyPlan"/><con:wsrmConfig version="1.2"/></con:call><con:call id="07b63d4f-cf02-49bb-88bd-4a420eea20e9" name="Request 3"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:AddDailyPlanRequest>\r
+         <productId>1</productId>\r
+         <plannedQuantity>15</plannedQuantity>\r
+         <date>11.02.2025</date>\r
+      </inv:AddDailyPlanRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/addDailyPlan"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="56b4514d-c6c2-4ad2-80d4-c12d290dccd9" isOneWay="false" action="http://example.com/inventory/addProduct" name="addProduct" bindingOperationName="addProduct" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="536f389a-8caa-4202-b7f1-8571d294ed12" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:AddProductRequest>\r
+         <name>?</name>\r
+         <category>?</category>\r
+      </inv:AddProductRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/addProduct"/></con:call><con:call id="2ed12e15-3611-4856-b11b-56a73c95ed43" name="Request 2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:AddProductRequest>\r
+         <name>Test</name>\r
+         <category>Test</category>\r
+      </inv:AddProductRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/addProduct"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="9c98b0e8-1fb0-49bd-a62d-725e2d73417e" isOneWay="false" action="http://example.com/inventory/getReport" name="getReport" bindingOperationName="getReport" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="dfbaa9dc-336e-4fe2-83db-db60b404edb0" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:GetReportRequest>\r
+         <date>?</date>\r
+      </inv:GetReportRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/getReport"/></con:call><con:call id="3c647615-efa3-45f8-8fc2-ec4810716c50" name="Request 2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:GetReportRequest>\r
+         <date>11.02.2025</date>\r
+      </inv:GetReportRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/getReport"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="0857488a-4584-4d04-8bec-439eb3f7ffee" isOneWay="false" action="http://example.com/inventory/updateStock" name="updateStock" bindingOperationName="updateStock" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="3313f1e0-d0c8-4ca8-9221-d728f7167fe5" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:UpdateStockRequest>\r
+         <productId>?</productId>\r
+         <changeType>?</changeType>\r
+         <quantity>?</quantity>\r
+      </inv:UpdateStockRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/updateStock"/></con:call><con:call id="cb6547c8-a158-4766-84a0-2987e36e22c2" name="Request 2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:UpdateStockRequest>\r
+         <productId>1</productId>\r
+         <changeType>sale</changeType>\r
+         <quantity>10</quantity>\r
+      </inv:UpdateStockRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/updateStock"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite id="32bcd85e-8823-4d36-97f0-c6a4ef8fc72d" name="InventoryBinding TestSuite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="5e645b34-93e5-44ac-af38-c05dd275caff" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="InventoryBinding TestSuite" searchProperties="true"><con:settings/><con:testStep type="request" id="60f66cfe-fcf2-42ef-b653-a7dd2bc50a2b" name="addDailyPlan"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>InventoryBinding</con:interface><con:operation>addDailyPlan</con:operation><con:request name="addDailyPlan" outgoingWss="" incomingWss="" timeout="" sslKeystore="" useWsAddressing="false" useWsReliableMessaging="false" wssPasswordType="" id="9c840e67-0a8a-487b-9a8e-c0995b890a85"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:AddDailyPlanRequest>\r
+         <productId>?</productId>\r
+         <plannedQuantity>?</plannedQuantity>\r
+         <date>?</date>\r
+      </inv:AddDailyPlanRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/addDailyPlan"/></con:request></con:config></con:testStep><con:testStep type="request" id="0162d9b6-af49-4586-a5ed-41ff9f64e48e" name="addProduct"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>InventoryBinding</con:interface><con:operation>addProduct</con:operation><con:request name="addProduct" outgoingWss="" incomingWss="" timeout="" sslKeystore="" useWsAddressing="false" useWsReliableMessaging="false" wssPasswordType="" id="9f5db543-9ffa-45a5-be48-cd1fdd941ab0"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:AddProductRequest>\r
+         <name>?</name>\r
+         <category>?</category>\r
+      </inv:AddProductRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/addProduct"/></con:request></con:config></con:testStep><con:testStep type="request" id="ac8c8070-ebac-447b-af5c-9c970f0c3ad2" name="getReport"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>InventoryBinding</con:interface><con:operation>getReport</con:operation><con:request name="getReport" outgoingWss="" incomingWss="" timeout="" sslKeystore="" useWsAddressing="false" useWsReliableMessaging="false" wssPasswordType="" id="df4e4431-e212-478f-9e58-0435115ee170"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:GetReportRequest>\r
+         <date>?</date>\r
+      </inv:GetReportRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/getReport"/></con:request></con:config></con:testStep><con:testStep type="request" id="53ad4df6-bec3-4b7e-b7bd-6a5bac0be2a0" name="updateStock"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>InventoryBinding</con:interface><con:operation>updateStock</con:operation><con:request name="updateStock" outgoingWss="" incomingWss="" timeout="" sslKeystore="" useWsAddressing="false" useWsReliableMessaging="false" wssPasswordType="" id="fd583eb1-8fba-462c-918a-04e22f79dc7d"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <inv:UpdateStockRequest>\r
+         <productId>?</productId>\r
+         <changeType>?</changeType>\r
+         <quantity>?</quantity>\r
+      </inv:UpdateStockRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/updateStock"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>

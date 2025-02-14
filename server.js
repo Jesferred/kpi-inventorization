@@ -13,7 +13,7 @@ const service = {
                 try {
                     const { name, category } = args;
                     const product = await Products.create({ name, category });
-                    callback(null, { productId: product.id });
+                    callback(null, { productId: product.id, message: 'Product added successfully' });
                 } catch (error) {
                     callback(error);
                 }
@@ -21,7 +21,7 @@ const service = {
             
             async addDailyPlan(args, callback) {
                 try {
-                    const { productName, plannedQuantity, date } = args;
+                    const { productName, plannedQuantity } = args;
                     // Знайдіть товар за назвою
                     const product = await Products.findOne({ where: { name: productName } });
                     if (!product) {
@@ -30,15 +30,18 @@ const service = {
                     }
                     const productId = product.id;
 
+                    // Отримайте поточну дату
+                    const date = new Date().toISOString().split('T')[0];
+
                     // Перевірка наявності денного плану
                     let dailyPlan = await DailyPlans.findOne({ where: { product_id: productId, date } });
                     if (dailyPlan) {
                         // Якщо план існує, поверніть його ID
-                        callback(null, { dailyPlanId: dailyPlan.id });
+                        callback(null, { dailyPlanId: dailyPlan.id, message: 'Daily plan already exists' });
                     } else {
                         // Якщо план не існує, створіть новий план
                         dailyPlan = await DailyPlans.create({ product_id: productId, planned_quantity: plannedQuantity, date });
-                        callback(null, { dailyPlanId: dailyPlan.id });
+                        callback(null, { dailyPlanId: dailyPlan.id, message: 'Daily plan created successfully' });
                     }
                 } catch (error) {
                     callback(error);
@@ -49,7 +52,7 @@ const service = {
                 try {
                     const { productId, changeType, quantity } = args;
                     await StockChanges.create({ product_id: productId, change_type: changeType, quantity });
-                    callback(null, { success: true });
+                    callback(null, { success: true, message: 'Stock updated successfully' });
                 } catch (error) {
                     callback(error);
                 }
@@ -58,7 +61,7 @@ const service = {
             async getAllProducts(args, callback) {
                 try {
                     const products = await Products.findAll();
-                    callback(null, { products });
+                    callback(null, { products, message: 'Products retrieved successfully' });
                 } catch (error) {
                     callback(error);
                 }
@@ -80,7 +83,7 @@ const service = {
                     });
                 }
 
-                callback(null, { reports });
+                callback(null, { reports, message: 'Report generated successfully' });
             }
         }
     }

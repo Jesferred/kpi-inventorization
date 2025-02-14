@@ -13,7 +13,15 @@
           <xsd:sequence>
             <xsd:element name="productName" type="xsd:string"/>
             <xsd:element name="plannedQuantity" type="xsd:int"/>
-            <xsd:element name="date" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="AddDailyPlanResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="dailyPlanId" type="xsd:int"/>
+            <xsd:element name="message" type="xsd:string"/>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
@@ -28,10 +36,28 @@
         </xsd:complexType>
       </xsd:element>
 
+      <xsd:element name="UpdateStockResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="success" type="xsd:boolean"/>
+            <xsd:element name="message" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
       <xsd:element name="GetReportRequest">
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="date" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="GetReportResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="reports" type="xsd:string"/>
+            <xsd:element name="message" type="xsd:string"/>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
@@ -49,6 +75,7 @@
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="productId" type="xsd:int"/>
+            <xsd:element name="message" type="xsd:string"/>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
@@ -60,21 +87,21 @@
     <part name="parameters" element="tns:AddDailyPlanRequest"/>
   </message>
   <message name="AddDailyPlanResponse">
-    <part name="confirmation" type="xsd:string"/>
+    <part name="parameters" element="tns:AddDailyPlanResponse"/>
   </message>
 
   <message name="UpdateStockRequest">
     <part name="parameters" element="tns:UpdateStockRequest"/>
   </message>
   <message name="UpdateStockResponse">
-    <part name="confirmation" type="xsd:string"/>
+    <part name="parameters" element="tns:UpdateStockResponse"/>
   </message>
 
   <message name="GetReportRequest">
     <part name="parameters" element="tns:GetReportRequest"/>
   </message>
   <message name="GetReportResponse">
-    <part name="reportData" type="xsd:string"/>
+    <part name="parameters" element="tns:GetReportResponse"/>
   </message>
 
   <message name="AddProductRequest">

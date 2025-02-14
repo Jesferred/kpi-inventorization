@@ -20,9 +20,29 @@ const service = {
             },
             
             async addDailyPlan(args, callback) {
-                const { productId, plannedQuantity, date } = args;
-                await DailyPlans.create({ product_id: productId, planned_quantity: plannedQuantity, date });
-                callback(null, { success: true });
+                try {
+                    const { productName, plannedQuantity, date } = args;
+                    // Знайдіть товар за назвою
+                    const product = await Products.findOne({ where: { name: productName } });
+                    if (!product) {
+                        callback(new Error('Product not found'));
+                        return;
+                    }
+                    const productId = product.id;
+
+                    // Перевірка наявності денного плану
+                    let dailyPlan = await DailyPlans.findOne({ where: { product_id: productId, date } });
+                    if (dailyPlan) {
+                        // Якщо план існує, поверніть його ID
+                        callback(null, { dailyPlanId: dailyPlan.id });
+                    } else {
+                        // Якщо план не існує, створіть новий план
+                        dailyPlan = await DailyPlans.create({ product_id: productId, planned_quantity: plannedQuantity, date });
+                        callback(null, { dailyPlanId: dailyPlan.id });
+                    }
+                } catch (error) {
+                    callback(error);
+                }
             },
 
             async updateStock(args, callback) {
@@ -35,6 +55,14 @@ const service = {
                 }
             },
 
+            async getAllProducts(args, callback) {
+                try {
+                    const products = await Products.findAll();
+                    callback(null, { products });
+                } catch (error) {
+                    callback(error);
+                }
+            },
 
             async getReport(args, callback) {
                 const { date } = args;

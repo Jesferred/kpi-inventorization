@@ -11,7 +11,7 @@
       <xsd:element name="AddDailyPlanRequest">
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:element name="productId" type="xsd:int"/>
+            <xsd:element name="productName" type="xsd:string"/>
             <xsd:element name="plannedQuantity" type="xsd:int"/>
             <xsd:element name="date" type="xsd:string"/>
           </xsd:sequence>
@@ -155,7 +155,7 @@
   <!-- Опис сервісу -->
   <service name="InventoryService">
     <port name="InventoryPort" binding="tns:InventoryBinding">
-      <soap:address location="http://localhost:3000/inventory"/>
+      <soap:address location="https://invent-13fd83ab7b72.herokuapp.com/inventory"/>
     </port>
   </service>
 

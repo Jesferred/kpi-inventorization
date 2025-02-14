@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="3d562de2-ba9f-4afa-8eb9-6c2ebe8a8b50" activeEnvironment="Default" name="inventory" resourceRoot="${projectDir}" soapui-version="5.8.0" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="b60b6e11-28e1-4647-93b4-eeb06ef2b890" wsaVersion="NONE" name="InventoryBinding" type="wsdl" bindingName="{http://example.com/inventory}InventoryBinding" soapVersion="1_1" anonymous="optional" definition="inventory.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="file:\C:\Users\kckte\kpi-inventorization\inventory.wsdl"><con:part><con:url>file:\C:\Users\kckte\kpi-inventorization\inventory.wsdl</con:url><con:content><![CDATA[<definitions name="InventoryService" targetNamespace="http://example.com/inventory" xmlns:tns="http://example.com/inventory" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+<con:soapui-project id="3d562de2-ba9f-4afa-8eb9-6c2ebe8a8b50" activeEnvironment="Default" name="inventory" resourceRoot="${projectDir}" soapui-version="5.8.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="b60b6e11-28e1-4647-93b4-eeb06ef2b890" wsaVersion="NONE" name="InventoryBinding" type="wsdl" bindingName="{http://example.com/inventory}InventoryBinding" soapVersion="1_1" anonymous="optional" definition="inventory.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="file:\C:\Users\kckte\kpi-inventorization\inventory.wsdl"><con:part><con:url>file:\C:\Users\kckte\kpi-inventorization\inventory.wsdl</con:url><con:content><![CDATA[<definitions name="InventoryService" targetNamespace="http://example.com/inventory" xmlns:tns="http://example.com/inventory" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <!--Опис типів-->
+   <!-- Опис типів -->
   <types>
     <xsd:schema targetNamespace="http://example.com/inventory">
       <xsd:element name="AddDailyPlanRequest">
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:element name="productId" type="xsd:int"/>
+            <xsd:element name="productName" type="xsd:string"/>
             <xsd:element name="plannedQuantity" type="xsd:int"/>
             <xsd:element name="date" type="xsd:string"/>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
+      
       <xsd:element name="UpdateStockRequest">
         <xsd:complexType>
           <xsd:sequence>
@@ -185,7 +187,7 @@
          <date>?</date>\r
       </inv:GetReportRequest>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/getReport"/></con:call><con:call id="3c647615-efa3-45f8-8fc2-ec4810716c50" name="Request 2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:3000/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/getReport"/></con:call><con:call id="3c647615-efa3-45f8-8fc2-ec4810716c50" name="Request 2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>https://invent-13fd83ab7b72.herokuapp.com/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
       <inv:GetReportRequest>\r

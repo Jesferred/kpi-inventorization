@@ -79,6 +79,23 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
+
+      <xsd:element name="GetDailyPlanRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <!-- Параметр date видалено -->
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="GetDailyPlanResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="dailyPlans" type="xsd:string"/>
+            <xsd:element name="message" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
     </xsd:schema>
   </types>
 
@@ -111,6 +128,13 @@
     <part name="parameters" element="tns:AddProductResponse"/>
   </message>
 
+  <message name="GetDailyPlanRequest">
+    <part name="parameters" element="tns:GetDailyPlanRequest"/>
+  </message>
+  <message name="GetDailyPlanResponse">
+    <part name="parameters" element="tns:GetDailyPlanResponse"/>
+  </message>
+
   <!-- Опис порту (операцій сервісу) -->
   <portType name="InventoryPortType">
     <operation name="addDailyPlan">
@@ -131,6 +155,11 @@
     <operation name="addProduct">
       <input message="tns:AddProductRequest"/>
       <output message="tns:AddProductResponse"/>
+    </operation>
+
+    <operation name="getDailyPlan">
+      <input message="tns:GetDailyPlanRequest"/>
+      <output message="tns:GetDailyPlanResponse"/>
     </operation>
   </portType>
 
@@ -170,6 +199,16 @@
 
     <operation name="addProduct">
       <soap:operation soapAction="http://example.com/inventory/addProduct"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getDailyPlan">
+      <soap:operation soapAction="http://example.com/inventory/getDailyPlan"/>
       <input>
         <soap:body use="literal"/>
       </input>

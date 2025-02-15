@@ -81,6 +81,28 @@ const service = {
                 }
             },
 
+            async getDailyPlan(args, callback) {
+                try {
+                    // Отримайте поточну дату
+                    const date = new Date().toISOString().split('T')[0];
+                    const dailyPlans = await DailyPlans.findAll({
+                        where: { date },
+                        include: [{ model: Products, attributes: ['name', 'category'] }]
+                    });
+
+                    const result = dailyPlans.map(plan => ({
+                        productName: plan.Product.name,
+                        category: plan.Product.category,
+                        plannedQuantity: plan.planned_quantity,
+                        date: plan.date
+                    }));
+
+                    callback(null, { dailyPlans: result, message: 'Daily plans retrieved successfully' });
+                } catch (error) {
+                    callback(error);
+                }
+            },
+
             async getReport(args, callback) {
                 const { date } = args;
                 const plans = await DailyPlans.findAll({ where: { date } });

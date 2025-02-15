@@ -36,8 +36,10 @@ const service = {
                     // Перевірка наявності денного плану
                     let dailyPlan = await DailyPlans.findOne({ where: { product_id: productId, date } });
                     if (dailyPlan) {
-                        // Якщо план існує, поверніть його ID
-                        callback(null, { dailyPlanId: dailyPlan.id, message: 'Daily plan already exists' });
+                        // Якщо план існує, оновіть кількість
+                        dailyPlan.planned_quantity += plannedQuantity;
+                        await dailyPlan.save();
+                        callback(null, { dailyPlanId: dailyPlan.id, message: 'Daily plan updated successfully' });
                     } else {
                         // Якщо план не існує, створіть новий план
                         dailyPlan = await DailyPlans.create({ product_id: productId, planned_quantity: plannedQuantity, date });

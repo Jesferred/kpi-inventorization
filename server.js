@@ -21,12 +21,12 @@ const service = {
             
             async addDailyPlan(args, callback) {
                 try {
-                    const { productName, plannedQuantity } = args;
+                    const { productName, category, plannedQuantity } = args;
                     // Знайдіть товар за назвою
-                    const product = await Products.findOne({ where: { name: productName } });
+                    let product = await Products.findOne({ where: { name: productName } });
                     if (!product) {
-                        callback(new Error('Product not found'));
-                        return;
+                        // Якщо товар не знайдено, створіть новий товар
+                        product = await Products.create({ name: productName, category });
                     }
                     const productId = product.id;
 

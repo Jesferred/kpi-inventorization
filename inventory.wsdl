@@ -12,6 +12,7 @@
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="productName" type="xsd:string"/>
+            <xsd:element name="category" type="xsd:string"/>
             <xsd:element name="plannedQuantity" type="xsd:int"/>
           </xsd:sequence>
         </xsd:complexType>

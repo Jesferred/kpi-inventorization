@@ -1,6 +1,6 @@
 import express from 'express';
 import soap from 'soap';
-import { Products, DailyPlans, StockChanges, Reports } from './models.js';
+import { Products, DailyPlans, StockChanges, ActualStock, Reports } from './models.js';
 import { readFileSync } from 'fs';
 
 const app = express();
@@ -52,9 +52,21 @@ const service = {
 
             async updateStock(args, callback) {
                 try {
-                    const { productId, changeType, quantity } = args;
-                    await StockChanges.create({ product_id: productId, change_type: changeType, quantity });
-                    callback(null, { success: true, message: 'Stock updated successfully' });
+                    const { productName, actualQuantity } = args;
+                    // Знайдіть товар за назвою
+                    let product = await Products.findOne({ where: { name: productName } });
+                    if (!product) {
+                        callback(new Error('Product not found'));
+                        return;
+                    }
+                    const productId = product.id;
+
+                    // Отримайте поточну дату
+                    const date = new Date().toISOString().split('T')[0];
+
+                    // Збережіть фактичну кількість товарів
+                    await ActualStock.create({ product_id: productId, actual_quantity: actualQuantity, date });
+                    callback(null, { success: true, message: 'Actual stock updated successfully' });
                 } catch (error) {
                     callback(error);
                 }
@@ -75,13 +87,13 @@ const service = {
                 const reports = [];
 
                 for (const plan of plans) {
-                    const changes = await StockChanges.findAll({ where: { product_id: plan.product_id } });
-                    const totalChange = changes.reduce((sum, change) => sum + change.quantity, 0);
+                    const actualStock = await ActualStock.findOne({ where: { product_id: plan.product_id, date } });
+                    const actualQuantity = actualStock ? actualStock.actual_quantity : 0;
                     reports.push({
                         productId: plan.product_id,
                         plannedQuantity: plan.planned_quantity,
-                        actualQuantity: plan.planned_quantity - totalChange,
-                        difference: totalChange
+                        actualQuantity: actualQuantity,
+                        difference: plan.planned_quantity - actualQuantity
                     });
                 }
 

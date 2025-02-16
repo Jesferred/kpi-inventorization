@@ -97,20 +97,14 @@
         </xsd:complexType>
       </xsd:element>
 
-      <xsd:complexType name="DailyPlanList">
-        <xsd:sequence>
-          <xsd:element name="dailyPlan" type="tns:DailyPlan" maxOccurs="unbounded"/>
-        </xsd:sequence>
-      </xsd:complexType>
-
-      <xsd:complexType name="DailyPlan">
-        <xsd:sequence>
-          <xsd:element name="productName" type="xsd:string"/>
-          <xsd:element name="category" type="xsd:string"/>
-          <xsd:element name="plannedQuantity" type="xsd:int"/>
-          <xsd:element name="date" type="xsd:string"/>
-        </xsd:sequence>
-      </xsd:complexType>
+      <xsd:element name="GetDailyPlanResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="dailyPlans" type="xsd:string"/>
+            <xsd:element name="message" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
     </xsd:schema>
   </types>
 

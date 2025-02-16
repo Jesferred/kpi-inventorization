@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,12 +69,12 @@ namespace Lab1._1
             return "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + soapEnvelope.ToString();
         }
 
-        static async Task<string> SendSoapRequest(string url, string xmlData)
+        static async Task<string> SendSoapRequest(string url, string xmlData, string action)
         {
             using (HttpClient client = new HttpClient())
             {
                 var content = new StringContent(xmlData, Encoding.UTF8, "text/xml");
-                content.Headers.Add("SOAPAction", "http://example.com/inventory/updateStock");
+                content.Headers.Add("SOAPAction", "http://example.com/inventory/"+action);
                 content.Headers.ContentType.CharSet = "utf-8";
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url)
@@ -118,15 +119,17 @@ namespace Lab1._1
                 return;
             }
 
+
             string xmlRequest = GenerateSoapXml(productName, amount);
-            string response = await SendSoapRequest("https://invent-13fd83ab7b72.herokuapp.com/inventory", xmlRequest);
+            string response = await SendSoapRequest("https://invent-13fd83ab7b72.herokuapp.com/inventory", xmlRequest, "updateStock");
             Trace.WriteLine(response);
         }
 
         private async void btnPlan_Click(object sender, RoutedEventArgs e)
         {
             string xmlRequest = GenerateGetDailyPlanSoapXml();
-            string response = await SendSoapRequest("https://invent-13fd83ab7b72.herokuapp.com/inventory", xmlRequest);
+            string response = await SendSoapRequest("https://invent-13fd83ab7b72.herokuapp.com/inventory", xmlRequest, "getDailyPlan");
+            Trace.WriteLine(response);
             DisplayDailyPlan(response);
         }
 
@@ -149,6 +152,7 @@ namespace Lab1._1
 
         private void DisplayDailyPlan(string response)
         {
+
             XDocument doc = XDocument.Parse(response);
             XNamespace tns = "http://example.com/inventory";
 
@@ -169,9 +173,14 @@ namespace Lab1._1
                 sb.AppendLine($"Date: {plan.Date}");
                 sb.AppendLine();
             }
-
+            Console.WriteLine( sb.ToString() );
             MessageBox.Show(sb.ToString(), "Daily Plan");
         }
+
+        private void btnToCheck_Click(object sender, RoutedEventArgs e)
+        {
+            // Implement the logic for btnToCheck_Click
+        }
+
     }
 }
-

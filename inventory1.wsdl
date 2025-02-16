@@ -91,6 +91,15 @@
       <xsd:element name="GetDailyPlanResponse">
         <xsd:complexType>
           <xsd:sequence>
+            <xsd:element name="dailyPlans" type="tns:DailyPlanList"/>
+            <xsd:element name="message" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="GetDailyPlanResponse">
+        <xsd:complexType>
+          <xsd:sequence>
             <xsd:element name="dailyPlans" type="xsd:string"/>
             <xsd:element name="message" type="xsd:string"/>
           </xsd:sequence>

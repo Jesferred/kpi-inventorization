@@ -80,7 +80,7 @@
         </xsd:complexType>
       </xsd:element>
 
-      <xsd:element name="GetDailyPlanRequest">
+     <xsd:element name="GetDailyPlanRequest">
         <xsd:complexType>
           <xsd:sequence>
             <!-- Параметр date видалено -->

@@ -104,22 +104,30 @@ const service = {
             },
 
             async getReport(args, callback) {
-                const { date } = args;
-                const plans = await DailyPlans.findAll({ where: { date } });
-                const reports = [];
-
-                for (const plan of plans) {
-                    const actualStock = await ActualStock.findOne({ where: { product_id: plan.product_id, date } });
-                    const actualQuantity = actualStock ? actualStock.actual_quantity : 0;
-                    reports.push({
-                        productId: plan.product_id,
-                        plannedQuantity: plan.planned_quantity,
-                        actualQuantity: actualQuantity,
-                        difference: plan.planned_quantity - actualQuantity
+                try {
+                    // Получите текущую дату
+                    const date = new Date().toISOString().split('T')[0];
+                    const plans = await DailyPlans.findAll({
+                        where: { date },
+                        include: [{ model: Products, attributes: ['name', 'category'] }]
                     });
-                }
 
-                callback(null, { reports, message: 'Report generated successfully' });
+                    const reports = await Promise.all(plans.map(async (plan) => {
+                        const actualStock = await ActualStock.findOne({ where: { product_id: plan.product_id, date } });
+                        const actualQuantity = actualStock ? actualStock.actual_quantity : 0;
+                        return {
+                            productName: plan.Product.name,
+                            category: plan.Product.category,
+                            plannedQuantity: plan.planned_quantity,
+                            actualQuantity: actualQuantity,
+                            difference: plan.planned_quantity - actualQuantity
+                        };
+                    }));
+
+                    callback(null, { reports, message: 'Report generated successfully' });
+                } catch (error) {
+                    callback(error);
+                }
             }
         }
     }

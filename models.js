@@ -26,7 +26,7 @@ const Reports = sequelize.define("Reports", {
   date: { type: DataTypes.DATEONLY, allowNull: false },
   planned_quantity: { type: DataTypes.INTEGER, allowNull: false },
   actual_quantity: { type: DataTypes.INTEGER, allowNull: false },
-  difference: { type: DataTypes.INTEGER, allowNull: false }
+  difference: { type: DataTypes.INTEGER, allowNull: false, field: 'diffrence' } // Соответствует названию в БД
 });
 
 Products.hasMany(DailyPlans, { foreignKey: "product_id" });

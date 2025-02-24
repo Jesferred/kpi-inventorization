@@ -111,31 +111,31 @@ const service = {
                         where: { date },
                         include: [{ model: Products, attributes: ['name', 'category'] }]
                     });
-
+            
                     const reports = await Promise.all(plans.map(async (plan) => {
                         const actualStock = await ActualStocks.findOne({ where: { product_id: plan.product_id, date } });
                         const actualQuantity = actualStock ? actualStock.actual_quantity : 0;
+                        const difference = plan.planned_quantity - actualQuantity;
                         const report = {
                             productName: plan.Product.name,
                             category: plan.Product.category,
                             plannedQuantity: plan.planned_quantity,
                             actualQuantity: actualQuantity,
-                            difference: plan.planned_quantity - actualQuantity
+                            difference: difference
                         };
-
+            
                         // Сохраните отчет в таблице Reports
                         await Reports.create({
-                            product_name: report.productName,
-                            category: report.category,
+                            product_id: plan.product_id,
                             planned_quantity: report.plannedQuantity,
                             actual_quantity: report.actualQuantity,
-                            difference: report.difference,
+                            difference: report.difference, // ✅ Теперь соответствует модели Sequelize
                             date: date
-                        });
-
+                        });                        
+            
                         return report;
                     }));
-
+            
                     callback(null, { reports, message: 'Report generated and saved successfully' });
                 } catch (error) {
                     callback(error);

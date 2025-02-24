@@ -83,7 +83,6 @@
      <xsd:element name="GetDailyPlanRequest">
         <xsd:complexType>
           <xsd:sequence>
-            <!-- Параметр date видалено -->
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>

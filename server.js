@@ -115,16 +115,28 @@ const service = {
                     const reports = await Promise.all(plans.map(async (plan) => {
                         const actualStock = await ActualStocks.findOne({ where: { product_id: plan.product_id, date } });
                         const actualQuantity = actualStock ? actualStock.actual_quantity : 0;
-                        return {
+                        const report = {
                             productName: plan.Product.name,
                             category: plan.Product.category,
                             plannedQuantity: plan.planned_quantity,
                             actualQuantity: actualQuantity,
                             difference: plan.planned_quantity - actualQuantity
                         };
+
+                        // Сохраните отчет в таблице Reports
+                        await Reports.create({
+                            product_name: report.productName,
+                            category: report.category,
+                            planned_quantity: report.plannedQuantity,
+                            actual_quantity: report.actualQuantity,
+                            difference: report.difference,
+                            date: date
+                        });
+
+                        return report;
                     }));
 
-                    callback(null, { reports, message: 'Report generated successfully' });
+                    callback(null, { reports, message: 'Report generated and saved successfully' });
                 } catch (error) {
                     callback(error);
                 }

@@ -140,6 +140,33 @@ const service = {
                 } catch (error) {
                     callback(error);
                 }
+            },
+
+            async deleteDailyPlan(args, callback) {
+                try {
+                    const { productName } = args;
+
+                    // Найдите товар по имени
+
+                    let product = await Products.findOne({ where: { name: productName } });
+                    if (!product) {
+                        callback(new Error('Product not found'));
+                        return;
+                    }
+
+                    const productId = product.id;
+
+                    const date = new Date().toISOString().split('T')[0];
+
+                    const result = await DailyPlans.destroy({ where: { product_id: productId, date } });
+                    if (result === 0) {
+                        callback(new Error('Daily plan not found'));
+                    } else {
+                        callback(null, { success: true, message: 'Daily plan deleted successfully' });
+                    }
+                } catch (error) {
+                    callback(error);
+                }
             }
         }
     }

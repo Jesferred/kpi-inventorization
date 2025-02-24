@@ -1,6 +1,6 @@
 import express from 'express';
 import soap from 'soap';
-import { Products, DailyPlans, StockChanges, ActualStock, Reports } from './models.js';
+import { Products, DailyPlans, StockChanges, ActualStocks, Reports } from './models.js';
 import { readFileSync } from 'fs';
 
 const app = express();
@@ -65,7 +65,7 @@ const service = {
                     const date = new Date().toISOString().split('T')[0];
 
                     // Збережіть фактичну кількість товарів
-                    await ActualStock.create({ product_id: productId, actual_quantity: actualQuantity, date });
+                    await ActualStocks.create({ product_id: productId, actual_quantity: actualQuantity, date });
                     callback(null, { success: true, message: 'Actual stock updated successfully' });
                 } catch (error) {
                     callback(error);
@@ -113,7 +113,7 @@ const service = {
                     });
 
                     const reports = await Promise.all(plans.map(async (plan) => {
-                        const actualStock = await ActualStock.findOne({ where: { product_id: plan.product_id, date } });
+                        const actualStock = await ActualStocks.findOne({ where: { product_id: plan.product_id, date } });
                         const actualQuantity = actualStock ? actualStock.actual_quantity : 0;
                         return {
                             productName: plan.Product.name,

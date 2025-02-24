@@ -237,7 +237,7 @@
          <category>?</category>\r
       </inv:AddProductRequest>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/addProduct"/></con:call><con:call id="2ed12e15-3611-4856-b11b-56a73c95ed43" name="Request 2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>https://invent-13fd83ab7b72.herokuapp.com/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/addProduct"/><con:wsrmConfig version="1.2"/></con:call><con:call id="2ed12e15-3611-4856-b11b-56a73c95ed43" name="Request 2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>https://invent-13fd83ab7b72.herokuapp.com/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
       <inv:AddProductRequest>\r
@@ -257,7 +257,6 @@
    <soapenv:Header/>\r
    <soapenv:Body>\r
       <inv:GetReportRequest>\r
-         <date>2025-02-15</date>\r
       </inv:GetReportRequest>\r
    </soapenv:Body>\r
 </soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://example.com/inventory/getReport"/><con:wsrmConfig version="1.2"/></con:call><con:call id="3c647615-efa3-45f8-8fc2-ec4810716c50" name="Request 2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>https://invent-13fd83ab7b72.herokuapp.com/inventory</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inv="http://example.com/inventory">\r

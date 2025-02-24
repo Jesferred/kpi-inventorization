@@ -80,7 +80,7 @@
         </xsd:complexType>
       </xsd:element>
 
-     <xsd:element name="GetDailyPlanRequest">
+      <xsd:element name="GetDailyPlanRequest">
         <xsd:complexType>
           <xsd:sequence>
           </xsd:sequence>
@@ -96,10 +96,18 @@
         </xsd:complexType>
       </xsd:element>
 
-      <xsd:element name="GetDailyPlanResponse">
+      <xsd:element name="DeleteDailyPlanRequest">
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:element name="dailyPlans" type="xsd:string"/>
+            <xsd:element name="productName" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="DeleteDailyPlanResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="success" type="xsd:boolean"/>
             <xsd:element name="message" type="xsd:string"/>
           </xsd:sequence>
         </xsd:complexType>
@@ -143,6 +151,13 @@
     <part name="parameters" element="tns:GetDailyPlanResponse"/>
   </message>
 
+  <message name="DeleteDailyPlanRequest">
+    <part name="parameters" element="tns:DeleteDailyPlanRequest"/>
+  </message>
+  <message name="DeleteDailyPlanResponse">
+    <part name="parameters" element="tns:DeleteDailyPlanResponse"/>
+  </message>
+
   <!-- Опис порту (операцій сервісу) -->
   <portType name="InventoryPortType">
     <operation name="addDailyPlan">
@@ -168,6 +183,11 @@
     <operation name="getDailyPlan">
       <input message="tns:GetDailyPlanRequest"/>
       <output message="tns:GetDailyPlanResponse"/>
+    </operation>
+
+    <operation name="deleteDailyPlan">
+      <input message="tns:DeleteDailyPlanRequest"/>
+      <output message="tns:DeleteDailyPlanResponse"/>
     </operation>
   </portType>
 
@@ -217,6 +237,16 @@
 
     <operation name="getDailyPlan">
       <soap:operation soapAction="http://example.com/inventory/getDailyPlan"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="deleteDailyPlan">
+      <soap:operation soapAction="http://example.com/inventory/deleteDailyPlan"/>
       <input>
         <soap:body use="literal"/>
       </input>

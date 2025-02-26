@@ -27,7 +27,7 @@
         </xsd:complexType>
       </xsd:element>
 
-      <xsd:element name="UpdateStockRequest">
+      <xsd:element name="AddActualStockRequest">
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="productName" type="xsd:string"/>
@@ -36,7 +36,7 @@
         </xsd:complexType>
       </xsd:element>
 
-      <xsd:element name="UpdateStockResponse">
+      <xsd:element name="AddActualStockResponse">
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="success" type="xsd:boolean"/>
@@ -126,11 +126,11 @@
     <part name="parameters" element="tns:AddDailyPlanResponse"/>
   </message>
 
-  <message name="UpdateStockRequest">
-    <part name="parameters" element="tns:UpdateStockRequest"/>
+  <message name="AddActualStockRequest">
+    <part name="parameters" element="tns:AddActualStockRequest"/>
   </message>
-  <message name="UpdateStockResponse">
-    <part name="parameters" element="tns:UpdateStockResponse"/>
+  <message name="AddActualStockResponse">
+    <part name="parameters" element="tns:AddActualStockResponse"/>
   </message>
 
   <message name="GetReportRequest">
@@ -168,9 +168,9 @@
       <output message="tns:AddDailyPlanResponse"/>
     </operation>
 
-    <operation name="updateStock">
-      <input message="tns:UpdateStockRequest"/>
-      <output message="tns:UpdateStockResponse"/>
+    <operation name="addActualStock">
+      <input message="tns:AddActualStockRequest"/>
+      <output message="tns:AddActualStockResponse"/>
     </operation>
 
     <operation name="getReport">
@@ -208,8 +208,8 @@
       </output>
     </operation>
 
-    <operation name="updateStock">
-      <soap:operation soapAction="http://example.com/inventory/updateStock"/>
+    <operation name="addActualStock">
+      <soap:operation soapAction="http://example.com/inventory/addActualStock"/>
       <input>
         <soap:body use="literal"/>
       </input>

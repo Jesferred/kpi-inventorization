@@ -1,6 +1,6 @@
 import express from 'express';
 import soap from 'soap';
-import { Products, DailyPlans, StockChanges, ActualStocks, Reports } from './models.js';
+import { Products, DailyPlans, ActualStocks, Reports } from './models.js';
 import { readFileSync } from 'fs';
 
 const app = express();
@@ -142,27 +142,17 @@ const service = {
                 }
             },
 
-            async deleteDailyPlan(args, callback) {
+            async deleteDailyPlans(args, callback) {
                 try {
-                    const { productName } = args;
-
-                    // Найдите товар по имени
-
-                    let product = await Products.findOne({ where: { name: productName } });
-                    if (!product) {
-                        callback(new Error('Product not found'));
-                        return;
-                    }
-
-                    const productId = product.id;
-
+                    // Отримайте поточну дату
                     const date = new Date().toISOString().split('T')[0];
-
-                    const result = await DailyPlans.destroy({ where: { product_id: productId, date } });
+            
+                    // Видаліть всі плани за поточною датою
+                    const result = await DailyPlans.destroy({ where: { date } });
                     if (result === 0) {
-                        callback(new Error('Daily plan not found'));
+                        callback(new Error('No daily plans found for the given date'));
                     } else {
-                        callback(null, { success: true, message: 'Daily plan deleted successfully' });
+                        callback(null, { success: true, message: 'All daily plans for the given date deleted successfully' });
                     }
                 } catch (error) {
                     callback(error);

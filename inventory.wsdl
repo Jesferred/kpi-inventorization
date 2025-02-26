@@ -100,14 +100,14 @@
         </xsd:complexType>
       </xsd:element>
 
-      <xsd:element name="DeleteDailyPlanRequest">
+      <xsd:element name="DeleteDailyPlansRequest">
         <xsd:complexType>
           <xsd:sequence>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
 
-      <xsd:element name="DeleteDailyPlanResponse">
+      <xsd:element name="DeleteDailyPlansResponse">
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="success" type="xsd:boolean"/>
@@ -154,11 +154,11 @@
     <part name="parameters" element="tns:GetDailyPlanResponse"/>
   </message>
 
-  <message name="DeleteDailyPlanRequest">
-    <part name="parameters" element="tns:DeleteDailyPlanRequest"/>
+  <message name="DeleteDailyPlansRequest">
+    <part name="parameters" element="tns:DeleteDailyPlansRequest"/>
   </message>
-  <message name="DeleteDailyPlanResponse">
-    <part name="parameters" element="tns:DeleteDailyPlanResponse"/>
+  <message name="DeleteDailyPlansResponse">
+    <part name="parameters" element="tns:DeleteDailyPlansResponse"/>
   </message>
 
   <!-- Опис порту (операцій сервісу) -->
@@ -188,9 +188,9 @@
       <output message="tns:GetDailyPlanResponse"/>
     </operation>
 
-    <operation name="deleteDailyPlan">
-      <input message="tns:DeleteDailyPlanRequest"/>
-      <output message="tns:DeleteDailyPlanResponse"/>
+    <operation name="deleteDailyPlans">
+      <input message="tns:DeleteDailyPlansRequest"/>
+      <output message="tns:DeleteDailyPlansResponse"/>
     </operation>
   </portType>
 
@@ -248,8 +248,8 @@
       </output>
     </operation>
 
-    <operation name="deleteDailyPlan">
-      <soap:operation soapAction="http://example.com/inventory/deleteDailyPlan"/>
+    <operation name="deleteDailyPlans">
+      <soap:operation soapAction="http://example.com/inventory/deleteDailyPlans"/>
       <input>
         <soap:body use="literal"/>
       </input>

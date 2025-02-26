@@ -15,30 +15,31 @@ app.post("/products", async (req, res) => {
   }
 });
 
+
 // Додавання плану на день
 app.post("/daily-plans", async (req, res) => {
-  try {
-    const { productName, category, plannedQuantity } = req.body;
-    let product = await Products.findOne({ where: { name: productName } });
-    if (!product) {
-      product = await Products.create({ name: productName, category });
+    try {
+      const { productName, category, plannedQuantity } = req.body;
+      let product = await Products.findOne({ where: { name: productName } });
+      if (!product) {
+        product = await Products.create({ name: productName, category });
+      }
+      const productId = product.id;
+      const date = new Date().toISOString().split("T")[0];
+  
+      let dailyPlan = await DailyPlans.findOne({ where: { product_id: productId, date } });
+      if (dailyPlan) {
+        dailyPlan.planned_quantity += plannedQuantity;
+        await dailyPlan.save();
+        res.json({ dailyPlanId: dailyPlan.id, message: "План на день успішно оновлено" });
+      } else {
+        dailyPlan = await DailyPlans.create({ product_id: productId, planned_quantity: plannedQuantity, date });
+        res.status(201).json({ dailyPlanId: dailyPlan.id, message: "План на день успішно додано" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-    const productId = product.id;
-    const date = new Date().toISOString().split("T")[0];
-
-    let dailyPlan = await DailyPlans.findOne({ where: { product_id: productId, date } });
-    if (dailyPlan) {
-      dailyPlan.planned_quantity += plannedQuantity;
-      await dailyPlan.save();
-      res.json({ dailyPlanId: dailyPlan.id, message: "План на день успішно оновлено" });
-    } else {
-      dailyPlan = await DailyPlans.create({ product_id: productId, planned_quantity: plannedQuantity, date });
-      res.status(201).json({ dailyPlanId: dailyPlan.id, message: "План на день успішно додано" });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+  });
 
 // Додавання фактичного залишку
 app.post("/actual-stocks", async (req, res) => {
@@ -128,6 +129,10 @@ app.get("/reports", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+app.get("/", (req, res) => {
+  res.json({ message: "REST API server is running :)" });
 });
 
 // Видалення всіх планів на день

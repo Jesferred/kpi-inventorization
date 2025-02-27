@@ -261,7 +261,7 @@
   <!-- Опис сервісу -->
   <service name="InventoryService">
     <port name="InventoryPort" binding="tns:InventoryBinding">
-      <soap:address location="https://invent-13fd83ab7b72.herokuapp.com/inventory"/>
+      <soap:address location="https://soap.gigakey.live/inventory"/>
     </port>
   </service>
 

@@ -1,6 +1,11 @@
 import express from "express";
 import soap from "soap";
-import { Products, DailyPlans, ActualStocks, Reports } from "./models.js";
+import {
+  Categories,
+  Products,
+  DailyPlans,
+  ActualStocks,
+} from "./models.js";
 import { readFileSync } from "fs";
 
 const app = express();
@@ -8,15 +13,24 @@ const xml = readFileSync("./inventory.wsdl", "utf8");
 
 // Створення SOAP сервісу
 const service = {
-    // Опис сервісу
+  // Ім'я сервісу
   InventoryService: {
-    // Порт для інвентаризації
+    // Ім'я порту
     InventoryPort: {
-     // Метод для додавання продукту
+      // Метод для додавання товару
       async addProduct(args, callback) {
         try {
           const { name, category } = args;
-          const product = await Products.create({ name, category });
+          let categoryInstance = await Categories.findOne({
+            where: { name: category },
+          });
+          if (!categoryInstance) {
+            categoryInstance = await Categories.create({ name: category });
+          }
+          const product = await Products.create({
+            name,
+            category_id: categoryInstance.id,
+          });
           callback(null, {
             productId: product.id,
             message: "Товар успішно додано",
@@ -26,41 +40,44 @@ const service = {
         }
       },
 
+
       // Метод для додавання плану на день
       async addDailyPlan(args, callback) {
         try {
           const { productName, category, plannedQuantity } = args;
+          let categoryInstance = await Categories.findOne({
+            where: { name: category },
+          });
+          if (!categoryInstance) {
+            categoryInstance = await Categories.create({ name: category });
+          }
           let product = await Products.findOne({
-            where: { name: productName },
+            where: { name: productName, category_id: categoryInstance.id },
           });
           if (!product) {
-            product = await Products.create({ name: productName, category });
+            product = await Products.create({
+              name: productName,
+              category_id: categoryInstance.id,
+            });
           }
-          const productId = product.id;
-
           const date = new Date().toISOString().split("T")[0];
-
           let dailyPlan = await DailyPlans.findOne({
-            where: { product_id: productId, date },
+            where: { product_id: product.id, date },
           });
           if (dailyPlan) {
             dailyPlan.planned_quantity += plannedQuantity;
             await dailyPlan.save();
-            callback(null, {
-              dailyPlanId: dailyPlan.id,
-              message: "План на день успішно оновлено",
-            });
           } else {
             dailyPlan = await DailyPlans.create({
-              product_id: productId,
+              product_id: product.id,
               planned_quantity: plannedQuantity,
               date,
             });
-            callback(null, {
-              dailyPlanId: dailyPlan.id,
-              message: "План на день успішно додано",
-            });
           }
+          callback(null, {
+            dailyPlanId: dailyPlan.id,
+            message: "План на день успішно оновлено",
+          });
         } catch (error) {
           callback(error);
         }
@@ -70,20 +87,18 @@ const service = {
       async addActualStock(args, callback) {
         try {
           const { productName, actualQuantity } = args;
-          let product = await Products.findOne({
+          const product = await Products.findOne({
             where: { name: productName },
           });
-          if (!product) {
-            callback(new Error("Товар не знайдено"));
-            return;
-          }
-          const productId = product.id;
-
+          const plan_id = await DailyPlans.findOne({
+            where: { product_id: product.id },
+          });
+          if (!product) return callback(new Error("Товар не знайдено"));
           const date = new Date().toISOString().split("T")[0];
-
           await ActualStocks.create({
-            product_id: productId,
+            product_id: product.id,
             actual_quantity: actualQuantity,
+            plan_id: plan_id.id,
             date,
           });
           callback(null, {
@@ -95,39 +110,28 @@ const service = {
         }
       },
 
-        // Метод для отримання всіх продуктів
-      async getAllProducts(args, callback) {
-        try {
-          const products = await Products.findAll();
-          callback(null, {
-            products,
-            message: "Продукти успішно отримано",
-          });
-        } catch (error) {
-          callback(error);
-        }
-      },
-
-        // Метод для отримання плану на день
+      // Метод для отримання плану на день
       async getDailyPlan(args, callback) {
         try {
           const date = new Date().toISOString().split("T")[0];
           const dailyPlans = await DailyPlans.findAll({
             where: { date },
-            include: [{ model: Products, attributes: ["name", "category"] }],
+            include: [{ model: Products, include: [Categories] }],
           });
-
           const result = dailyPlans.map((plan) => ({
             productName: plan.Product.name,
-            category: plan.Product.category,
+            category: plan.Product.Category.name,
             plannedQuantity: plan.planned_quantity,
             date: plan.date,
           }));
-
-          callback(null, {
-            dailyPlans: result,
-            message: "План на день успішно отримано",
-          });
+          if (result.length === 0) {
+           callback("План на день не знайдено");
+          } else {
+            callback(null, {
+              dailyPlans: result,
+              message: "План на день успішно отримано",
+            });
+          }
         } catch (error) {
           callback(error);
         }
@@ -139,41 +143,25 @@ const service = {
           const date = new Date().toISOString().split("T")[0];
           const plans = await DailyPlans.findAll({
             where: { date },
-            include: [{ model: Products, attributes: ["name", "category"] }],
+            include: [{ model: Products, include: [Categories] }],
           });
-
           const reports = await Promise.all(
             plans.map(async (plan) => {
               const actualStock = await ActualStocks.findOne({
-                where: { product_id: plan.product_id, date },
+                where: { plan_id: plan.id },
               });
-              const actualQuantity = actualStock
-                ? actualStock.actual_quantity
-                : 0;
-              const difference = plan.planned_quantity - actualQuantity;
-              const report = {
+              return {
                 productName: plan.Product.name,
-                category: plan.Product.category,
+                category: plan.Product.Category.name,
                 plannedQuantity: plan.planned_quantity,
-                actualQuantity: actualQuantity,
-                difference: difference,
+                actualQuantity: actualStock ? actualStock.actual_quantity : 0,
+                difference:
+                  plan.planned_quantity -
+                  (actualStock ? actualStock.actual_quantity : 0),
               };
-
-              await Reports.create({
-                product_id: plan.product_id,
-                planned_quantity: report.plannedQuantity,
-                actual_quantity: report.actualQuantity,
-                date: date,
-              });
-
-              return report;
             })
           );
-
-          callback(null, {
-            reports,
-            message: "Звіт успішно сформовано",
-          });
+          callback(null, { reports, message: "Звіт успішно сформовано" });
         } catch (error) {
           callback(error);
         }
@@ -190,8 +178,7 @@ const service = {
           } else {
             callback(null, {
               success: true,
-              message:
-                "Плани на день успішно видалено",
+              message: "Плани на день успішно видалено",
             });
           }
         } catch (error) {
@@ -202,15 +189,12 @@ const service = {
   },
 };
 
-// Маршрут для відображення WSDL документа
 app.use("/wsdl", (req, res) => {
   res.type("text/xml");
   res.send(xml);
 });
 
 const PORT = process.env.PORT || 3000;
-
-// Запуск сервера
 const server = app.listen(PORT, () => {
   soap.listen(server, "/inventory", service, xml);
   console.log("SOAP server running on port", PORT);

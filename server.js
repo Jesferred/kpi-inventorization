@@ -1,5 +1,5 @@
 import express from "express";
-import { Products, DailyPlans, ActualStocks, Reports } from "./models.js";
+import { Categories, Products, DailyPlans, ActualStocks, Reports } from "./models.js";
 
 const app = express();
 app.use(express.json());
@@ -8,51 +8,62 @@ app.use(express.json());
 app.post("/products", async (req, res) => {
   try {
     const { name, category } = req.body;
-    const product = await Products.create({ name, category });
+    let categoryInstance = await Categories.findOne({ where: { name: category } });
+    if (!categoryInstance) {
+      categoryInstance = await Categories.create({ name: category });
+    }
+    const product = await Products.create({ name, category_id: categoryInstance.id });
     res.status(201).json({ productId: product.id, message: "Товар успішно додано" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-
 // Додавання плану на день
 app.post("/daily-plans", async (req, res) => {
-    try {
-      const { productName, category, plannedQuantity } = req.body;
-      let product = await Products.findOne({ where: { name: productName } });
-      if (!product) {
-        product = await Products.create({ name: productName, category });
-      }
-      const productId = product.id;
-      const date = new Date().toISOString().split("T")[0];
-  
-      let dailyPlan = await DailyPlans.findOne({ where: { product_id: productId, date } });
-      if (dailyPlan) {
-        dailyPlan.planned_quantity += plannedQuantity;
-        await dailyPlan.save();
-        res.json({ dailyPlanId: dailyPlan.id, message: "План на день успішно оновлено" });
-      } else {
-        dailyPlan = await DailyPlans.create({ product_id: productId, planned_quantity: plannedQuantity, date });
-        res.status(201).json({ dailyPlanId: dailyPlan.id, message: "План на день успішно додано" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+  try {
+    const { productName, category, plannedQuantity } = req.body;
+    let categoryInstance = await Categories.findOne({ where: { name: category } });
+    if (!categoryInstance) {
+      categoryInstance = await Categories.create({ name: category });
     }
-  });
+    let product = await Products.findOne({ where: { name: productName, category_id: categoryInstance.id } });
+    if (!product) {
+      product = await Products.create({ name: productName, category_id: categoryInstance.id });
+    }
+    const productId = product.id;
+    const date = new Date().toISOString().split("T")[0];
+
+    let dailyPlan = await DailyPlans.findOne({ where: { product_id: productId, date } });
+    if (dailyPlan) {
+      dailyPlan.planned_quantity += plannedQuantity;
+      await dailyPlan.save();
+      res.json({ dailyPlanId: dailyPlan.id, message: "План на день успішно оновлено" });
+    } else {
+      dailyPlan = await DailyPlans.create({ product_id: productId, planned_quantity: plannedQuantity, date });
+      res.status(201).json({ dailyPlanId: dailyPlan.id, message: "План на день успішно додано" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Додавання фактичного залишку
 app.post("/actual-stocks", async (req, res) => {
   try {
     const { productName, actualQuantity } = req.body;
-    let product = await Products.findOne({ where: { name: productName } });
+    const product = await Products.findOne({ where: { name: productName } });
     if (!product) {
       return res.status(404).json({ error: "Товар не знайдено" });
     }
-    const productId = product.id;
+    const plan = await DailyPlans.findOne({ where: { product_id: product.id } });
     const date = new Date().toISOString().split("T")[0];
-
-    await ActualStocks.create({ product_id: productId, actual_quantity: actualQuantity, date });
+    await ActualStocks.create({
+      product_id: product.id,
+      actual_quantity: actualQuantity,
+      plan_id: plan.id,
+      date,
+    });
     res.status(201).json({ success: true, message: "Фактичний залишок успішно додано" });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -75,17 +86,19 @@ app.get("/daily-plans", async (req, res) => {
     const date = new Date().toISOString().split("T")[0];
     const dailyPlans = await DailyPlans.findAll({
       where: { date },
-      include: [{ model: Products, attributes: ["name", "category"] }],
+      include: [{ model: Products, include: [Categories] }],
     });
-
     const result = dailyPlans.map((plan) => ({
       productName: plan.Product.name,
-      category: plan.Product.category,
+      category: plan.Product.Category.name,
       plannedQuantity: plan.planned_quantity,
       date: plan.date,
     }));
-
-    res.json({ dailyPlans: result, message: "План на день успішно отримано" });
+    if (result.length === 0) {
+      res.status(404).json({ error: "План на день не знайдено" });
+    } else {
+      res.json({ dailyPlans: result, message: "План на день успішно отримано" });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -97,34 +110,22 @@ app.get("/reports", async (req, res) => {
     const date = new Date().toISOString().split("T")[0];
     const plans = await DailyPlans.findAll({
       where: { date },
-      include: [{ model: Products, attributes: ["name", "category"] }],
+      include: [{ model: Products, include: [Categories] }],
     });
-
     const reports = await Promise.all(
       plans.map(async (plan) => {
-        const actualStock = await ActualStocks.findOne({ where: { product_id: plan.product_id, date } });
-        const actualQuantity = actualStock ? actualStock.actual_quantity : 0;
-        const difference = plan.planned_quantity - actualQuantity;
-        const report = {
-          productName: plan.Product.name,
-          category: plan.Product.category,
-          plannedQuantity: plan.planned_quantity,
-          actualQuantity: actualQuantity,
-          difference: difference,
-        };
-
-        await Reports.create({
-          product_id: plan.product_id,
-          planned_quantity: report.plannedQuantity,
-          actual_quantity: report.actualQuantity,
-          difference: report.difference,
-          date: date,
+        const actualStock = await ActualStocks.findOne({
+          where: { plan_id: plan.id },
         });
-
-        return report;
+        return {
+          productName: plan.Product.name,
+          category: plan.Product.Category.name,
+          plannedQuantity: plan.planned_quantity,
+          actualQuantity: actualStock ? actualStock.actual_quantity : 0,
+          difference: plan.planned_quantity - (actualStock ? actualStock.actual_quantity : 0),
+        };
       })
     );
-
     res.json({ reports, message: "Звіт успішно сформовано" });
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -1,8 +1,13 @@
 import express from "express";
-import { Categories, Products, DailyPlans, ActualStocks, Reports } from "./models.js";
+import { Categories, Products, DailyPlans, ActualStocks } from "./models.js";
 
 const app = express();
+
 app.use(express.json());
+app.use((req, res, next) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  next();
+});
 
 // Додавання продукту
 app.post("/products", async (req, res) => {
